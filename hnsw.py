@@ -59,7 +59,7 @@ class HNSW(Generic[Query, Vector]):
 
     # --- State Operations ---
 
-    def _insert_vector(self, vec: Vector) -> Index:
+    def _mut_insert_vector(self, vec: Vector) -> Index:
         with self.lock:
             q = len(self.vectors)
             self.vectors.append(vec)
@@ -75,11 +75,11 @@ class HNSW(Generic[Query, Vector]):
         return self.layers[lc]
 
     @staticmethod
-    def get_links(e: Index, layer) -> "FurthestQueue":
+    def _get_links(e: Index, layer: Layer) -> "FurthestQueue":
         return layer.get(e) or FurthestQueue()
 
     @staticmethod
-    def mut_links(e, layer) -> "FurthestQueue":
+    def _mut_links(e: Index, layer: Layer) -> "FurthestQueue":
         conn = layer.get(e)
         if conn is None:
             conn = FurthestQueue()
@@ -89,7 +89,7 @@ class HNSW(Generic[Query, Vector]):
     def db_size(self) -> int:
         return len(self.vectors)
 
-    def _connect_bidir(
+    def _mut_connect_bidir(
         self,
         q: Index,
         neighbors: list[tuple[float, Index]],
@@ -108,12 +108,19 @@ class HNSW(Generic[Query, Vector]):
 
             for nq, n in neighbors:
                 # Connect n -> q.
-                n_links = HNSW.mut_links(n, layer)
+                n_links = HNSW._mut_links(n, layer)
                 self._record_list_comparison(len(n_links))
                 n_links.add(nq, q)
                 if len(n_links) > max_links:
                     n_links.trim_to_k_nearest(max_links)
                     # or select_neighbors_heuristic.
+
+    def _mut_may_be_entry_point(self, l: int, q: Index):
+        with self.lock:
+            if l >= len(self.layers):
+                while l >= len(self.layers):
+                    self.layers.append({})
+                self.entry_point[:] = [q]
 
     # --- Stats ---
 
@@ -167,7 +174,7 @@ class HNSW(Generic[Query, Vector]):
 
     def insert(self, q_vec: Query) -> Index:
         q_vec_to_store = self._query_to_vector_func(q_vec)
-        q = self._insert_vector(q_vec_to_store)
+        q = self._mut_insert_vector(q_vec_to_store)
 
         W = self._search_init(q_vec)
         L = len(self.layers) - 1
@@ -183,12 +190,9 @@ class HNSW(Generic[Query, Vector]):
             neighbors = W.get_k_nearest(self.M)  # or select_neighbors_heuristic
 
             max_conn = self.Mmax if lc else self.Mmax0
-            self._connect_bidir(q, neighbors, lc, max_conn)
+            self._mut_connect_bidir(q, neighbors, lc, max_conn)
 
-        if l > L:
-            while l > len(self.layers) - 1:
-                self.layers.append({})
-            self.entry_point[:] = [q]
+        self._mut_may_be_entry_point(l, q)
 
         return q  # ID of the inserted vector.
 
@@ -251,7 +255,7 @@ class HNSW(Generic[Query, Vector]):
                 break  # all elements in W are evaluated
 
             # update C and W
-            for _ec, e in self.get_links(c, layer):
+            for _ec, e in self._get_links(c, layer):
                 # TODO: batch distance.
                 if e not in v:
                     v.add(e)
