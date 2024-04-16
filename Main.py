@@ -6,21 +6,27 @@ import streamlit as st
 st.set_page_config(layout="wide")
 
 import hnsw
-import iris
 from iris_integration import (
+    DIM,
+    MAX_ROT,
     iris_random,
-    iris_distance,
     iris_with_noise,
-    iris_query_to_vector,
+    # Choose an implementation: `iris_`, `irisnp_`, `irisint_`.
+    irisint_make_query as make_query,
+    irisint_query_to_vector as query_to_vector,
+    irisint_distance as distance,
 )
 
-"# HNSW Demo"
 
-DIM = 800
+"# HNSW Demo"
 
 # with st.expander("**📊 Database Parameters**", expanded=False):
 with st.sidebar:
     "## 📊 Database Parameters"
+
+    f"**Dimension: `{DIM}`**"
+    f"**Rotations: `±{MAX_ROT}`**"
+
     M = int(
         st.number_input(
             "**M** \n- Number of neighbors in the graph. *E.g. 16 - 256.*",
@@ -51,8 +57,8 @@ with st.sidebar:
             M=M,
             efConstruction=efConstruction,
             m_L=m_L,
-            distance_func=iris_distance,
-            query_to_vector_func=iris_query_to_vector,
+            distance_func=distance,
+            query_to_vector_func=query_to_vector,
         )
 
     @st.cache_resource
@@ -77,16 +83,16 @@ with sta:
 
     n_insertions = st.number_input("Insert Vectors", 1, value=10, step=100)
 
-    insertions = []
+    _insertions = []
     db.reset_stats()
     for _ in range(int(n_insertions)):
-        # vec = random.randint(0, 2**DIM - 1)
-        vec = iris_random()
-        _id = db.insert(vec)
-        insertions.append((_id, vec))
-    df_insertions = pd.DataFrame(insertions, columns=["ID", "Vector"])
-    insert_stats = db.get_stats()
-    past_stats().append(insert_stats)
+        _tpl = iris_random()
+        _query = make_query(_tpl)
+        _id = db.insert(_query)
+        _insertions.append((_id, _tpl))
+    _insert_stats = db.get_stats()
+    past_stats().append(_insert_stats)
+    df_insertions = pd.DataFrame(_insertions, columns=["ID", "Template"])
 
     f"Auto-Inserted `{len(df_insertions)}` more vectors. Stats of the last few runs:"
     st.dataframe(pd.DataFrame(past_stats())[-3:].T)
@@ -105,27 +111,26 @@ with stb:
         )
     )
     K = 5
+    noise_level = 0.30
 
     target = df_insertions.iloc[0]
-    noise_level = 0.25
-    # noise = random.randint(0, 2 ** int(DIM * noise_level * 2) - 1)
-    # query = target.Vector ^ noise
-    query = iris_with_noise(target.Vector, level=noise_level)
+    noisy_tpl = iris_with_noise(target.Template, noise_level=noise_level)
 
     db.reset_stats()
+    query = make_query(noisy_tpl)
     res = db.search(query, K, ef=efSearch)
     search_stats = db.get_stats()
     df_found = pd.DataFrame(res, columns=["Distance", "ID"])
     df_found.index.name = "Rank"
 
     f"Searching for vector `ID {target.ID}`, with `{int(noise_level*100)}%` noise."
-    f"Found Top {K} Nearest Neighbors:"
+    f"`Top {K}` Nearest Neighbors:"
     st.dataframe(df_found)
     found = target.ID in df_found.ID.values
     st.write("✅ Found!" if found else f"❌ Not Found!")
 
 
-"### 📈 Insertion Stats:"
+"### 📈 Insertion Stats"
 df_stats = pd.DataFrame(past_stats())
 # DB size is reported after the insertions so we adjust it to the middle of the insertion run.
 df_stats["db_size_during_insertions"] = (

@@ -2,6 +2,7 @@ from typing import Callable, TypeVar, Generic, TypeAlias
 import numpy as np
 import bisect
 from threading import Lock
+from time import time
 
 
 def int_distance(x: int, y: int) -> int:
@@ -44,14 +45,16 @@ class HNSW(Generic[Query, Vector]):
         # Layer format: [ { node: [(distance(node, neighbor), neighbor)] } ]
         self.layers: list[Layer] = []
 
-        # Stats.
-        self._reset_stats()
+        # Tracing.
         self.search_log = {}
         self.record_search_log = False
+
+        # Stats.
         # Precompute the count of comparison of a list bisection.
         self.n_cmp_per_len = [
             int(np.ceil(np.log2(list_length + 1))) for list_length in range(10_000)
         ]
+        self._reset_stats()
 
     # --- State Operations ---
 
@@ -119,6 +122,7 @@ class HNSW(Generic[Query, Vector]):
         self.n_distances = 0
         self.n_comparisons = 0
         self.n_improve = 0
+        self.stat_time = time()
 
     def get_params(self) -> dict[str, int | float]:
         return {
@@ -129,7 +133,7 @@ class HNSW(Generic[Query, Vector]):
             # "Mmax0": self.Mmax0,
         }
 
-    def get_stats(self) -> dict[str, int]:
+    def get_stats(self) -> dict[str, int | float]:
         return {
             "db_size": len(self.vectors),
             "n_layers": len(self.layers),
@@ -138,9 +142,10 @@ class HNSW(Generic[Query, Vector]):
             "n_distances": self.n_distances,
             "n_comparisons": self.n_comparisons,
             "n_improve": self.n_improve,
+            "duration_sec": time() - self.stat_time,
         }
 
-    def reset_stats(self) -> dict[str, int]:
+    def reset_stats(self) -> dict[str, int | float]:
         "Return the current stats, then reset them."
         stats = self.get_stats()
         self._reset_stats()
