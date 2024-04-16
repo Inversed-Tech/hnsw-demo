@@ -1,0 +1,8 @@
+[browser]
+gatherUsageStats = false
+
+[server]
+enableStaticServing = true
+
+[logger]
+level = "warning"
