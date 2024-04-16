@@ -40,6 +40,7 @@ class HNSW(Generic[Query, Vector]):
         self._query_to_vector_func = query_to_vector_func
 
         # State.
+        self.lock = Lock()
         self.vectors: list[Vector] = []
         self.entry_point: list[Index] = []
         # Layer format: [ { node: [(distance(node, neighbor), neighbor)] } ]
@@ -59,7 +60,7 @@ class HNSW(Generic[Query, Vector]):
     # --- State Operations ---
 
     def _insert_vector(self, vec: Vector) -> Index:
-        with Lock():
+        with self.lock:
             q = len(self.vectors)
             self.vectors.append(vec)
             self.n_insertions += 1
@@ -95,7 +96,7 @@ class HNSW(Generic[Query, Vector]):
         lc: int,
         max_links: int,
     ):
-        with Lock():
+        with self.lock:
             layer = self._mut_layer(lc)
 
             # Connect q -> n.

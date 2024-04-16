@@ -25,7 +25,7 @@ with st.sidebar:
     "## 📊 Database Parameters"
 
     f"**Dimension: `{DIM}`**"
-    f"**Rotations: `±{MAX_ROT}`**"
+    f"**Rotations: `± {MAX_ROT}`**"
 
     M = int(
         st.number_input(
