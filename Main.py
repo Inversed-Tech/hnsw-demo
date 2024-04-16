@@ -7,29 +7,33 @@ st.set_page_config(layout="wide")
 
 import hnsw
 import iris
+from iris_integration import random_iris, distance_iris
 
 "# HNSW Demo"
 
 DIM = 800
 
-
 # with st.expander("**📊 Database Parameters**", expanded=False):
 with st.sidebar:
     "## 📊 Database Parameters"
-    M = st.number_input(
-        "**M** - Number of neighbors in the graph. *E.g. 16 - 256.*",
-        2,
-        value=128,
-        step=8,
+    M = int(
+        st.number_input(
+            "**M** \n- Number of neighbors in the graph. *E.g. 16 - 256.*",
+            2,
+            value=128,
+            step=8,
+        )
     )
-    efConstruction = st.number_input(
-        "**efConstruction** - Breadth of search during insertion. *E.g. 16 - 256.*",
-        1,
-        value=128,
-        step=8,
+    efConstruction = int(
+        st.number_input(
+            "**efConstruction** \n- Breadth of search during insertion. *E.g. 16 - 256.*",
+            1,
+            value=128,
+            step=8,
+        )
     )
     m_L = st.number_input(
-        "**m_L** - Factor for the number of layers. *E.g. 0.3 or 1/ln(M).*",
+        "**m_L** \n- Factor for the number of layers. *E.g. 0.3 or 1/ln(M).*",
         0.1,
         1.0,
         value=0.3,
@@ -52,7 +56,7 @@ with st.sidebar:
     db = make_db()
     _params = db.get_params()
     _params["Current Size"] = db.get_stats()["db_size"]
-    st.table(_params)
+    st.dataframe(pd.DataFrame([_params]).T)
 
 
 sta, stb = st.columns([6, 6], gap="large")
@@ -61,7 +65,6 @@ with sta:
     "## 🧩 Insertion"
 
     n_insertions = st.number_input("Insert Vectors", 1, value=100, step=100)
-    st.button("Insert More")
 
     insertions = []
     db.reset_stats()
@@ -73,8 +76,10 @@ with sta:
     insert_stats = db.get_stats()
     past_stats().append(insert_stats)
 
-    f"Auto-Inserted `{len(df_insertions)}` more vectors. Stats of the last run:"
-    st.table(insert_stats)
+    f"Auto-Inserted `{len(df_insertions)}` more vectors. Stats of the last few runs:"
+    st.dataframe(pd.DataFrame(past_stats())[-3:].T)
+
+    st.button("Insert More")
 
 
 with stb:
