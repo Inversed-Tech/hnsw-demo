@@ -1,4 +1,3 @@
-import streamlit as st
 import numpy as np
 
 import iris
@@ -54,27 +53,32 @@ def iris_query_to_vector(query: IrisTemplate) -> IrisTemplate:
 
 
 # --- Variant `irisnp` with pre-computed rotations in Numpy packed bits. ---
+# Not great because numpy does not have a bit_count function.
 
 
 # Precompute all rotations as a query.
 def irisnp_make_query(tpl: IrisTemplate) -> list[tuple[np.ndarray, np.ndarray]]:
-    all_rotations = [_rotated(tpl, rot) for rot in range(-MAX_ROT, MAX_ROT + 1)]
-    query = [_tpl_to_numpy(x) for x in all_rotations]
-    return query
+    query_all_rotations = [
+        _tpl_to_numpy(_rotated(tpl, rot)) for rot in range(-MAX_ROT, MAX_ROT + 1)
+    ]
+    return query_all_rotations
 
 
 # Distance between each precomputed rotation and a vector.
 def irisnp_distance(
     query: list[tuple[np.ndarray, np.ndarray]], vector: tuple[np.ndarray, np.ndarray]
 ) -> float:
-    return min(_np_distance(x, vector) for x in query)
+    # Unpack the vector from irisnp_query_to_vector.
+    y_code, y_mask = (np.unpackbits(vector[0]), np.unpackbits(vector[1]))
+    return min(_np_distance(x_code, x_mask, y_code, y_mask) for x_code, x_mask in query)
 
 
-# Store the no-rotation vector.
+# Store the no-rotation vector from irisnp_make_query. Pack the bits to save memory.
 def irisnp_query_to_vector(
     query: list[tuple[np.ndarray, np.ndarray]]
 ) -> tuple[np.ndarray, np.ndarray]:
-    return query[MAX_ROT]
+    code, mask = query[MAX_ROT]
+    return (np.packbits(code), np.packbits(mask))
 
 
 def _rotated(tpl: IrisTemplate, rot: int) -> IrisTemplate:
@@ -85,27 +89,25 @@ def _rotated(tpl: IrisTemplate, rot: int) -> IrisTemplate:
 
 
 def _tpl_to_numpy(tpl: IrisTemplate) -> tuple[np.ndarray, np.ndarray]:
-    code = np.packbits(np.concatenate(tpl.iris_codes))
-    mask = np.packbits(np.concatenate(tpl.mask_codes))
+    code = np.concatenate(tpl.iris_codes).flatten()
+    mask = np.concatenate(tpl.mask_codes).flatten()
     return (code, mask)
 
 
 def _np_distance(
-    x: tuple[np.ndarray, np.ndarray], y: tuple[np.ndarray, np.ndarray]
+    x_code: np.ndarray,
+    x_mask: np.ndarray,
+    y_code: np.ndarray,
+    y_mask: np.ndarray,
 ) -> float:
-    # TODO: try bitwise_count in Numpy 2.0.
-
-    x_code, x_mask = (np.unpackbits(x[0]), np.unpackbits(x[1]))
-    y_code, y_mask = (np.unpackbits(y[0]), np.unpackbits(y[1]))
-
     mask = x_mask & y_mask
     diff = (x_code ^ y_code) & mask
-
-    return np.sum(diff) / np.sum(mask, dtype=float)
+    return float(np.sum(diff)) / float(np.sum(mask))
 
 
 # --- Variant `irisint` with pre-computed rotations in Python big int ---
-# The fastest.
+# The fastest by far.
+# This may use CPU POPCNT instructions. It works on 30 bits limbs.
 
 
 # Precompute all rotations as a query.
@@ -148,3 +150,34 @@ def _int_distance(x: tuple[int, int], y: tuple[int, int]):
     diff = (x_code ^ y_code) & mask
 
     return diff.bit_count() / mask.bit_count()
+
+
+# --- Test of the implementations. ---
+def iris_test():
+    tpl = iris_random()
+
+    # Storage formats of the template.
+    vector = iris_query_to_vector(iris_make_query(tpl))
+    vector_np = irisnp_query_to_vector(irisnp_make_query(tpl))
+    vector_int = irisint_query_to_vector(irisint_make_query(tpl))
+
+    # Exact matches produce zero distance.
+    assert iris_distance(iris_make_query(tpl), vector) == 0.0
+    assert irisnp_distance(irisnp_make_query(tpl), vector_np) == 0.0
+    assert irisint_distance(irisint_make_query(tpl), vector_int) == 0.0
+
+    # Noisy query produces the same non-zero distance for all implementations.
+    noisy_tpl = iris_with_noise(tpl)
+
+    query = iris_make_query(noisy_tpl)
+    query_np = irisnp_make_query(noisy_tpl)
+    query_int = irisint_make_query(noisy_tpl)
+
+    dist = iris_distance(query, vector)
+    dist_np = irisnp_distance(query_np, vector_np)
+    dist_int = irisint_distance(query_int, vector_int)
+
+    assert 0.0 < dist < 0.5
+    assert dist == dist_np == dist_int
+
+    print("Test iris distance implementations: ✅")

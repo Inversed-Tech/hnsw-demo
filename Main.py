@@ -1,4 +1,3 @@
-import random
 import numpy as np
 import pandas as pd
 import streamlit as st
@@ -7,16 +6,18 @@ st.set_page_config(layout="wide")
 
 import hnsw
 from iris_integration import (
+    # Generate test templates.
     DIM,
     MAX_ROT,
     iris_random,
     iris_with_noise,
+    # Test implementation correctness.
+    # iris_test,
     # Choose an implementation: `iris_`, `irisnp_`, `irisint_`.
     irisint_make_query as make_query,
     irisint_query_to_vector as query_to_vector,
     irisint_distance as distance,
 )
-
 
 "# HNSW Demo"
 
