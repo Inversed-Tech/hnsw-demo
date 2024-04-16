@@ -1,6 +1,7 @@
 from typing import Callable, TypeVar, Generic, TypeAlias
 import numpy as np
 import bisect
+from threading import Lock
 
 
 def int_distance(x: int, y: int) -> int:
@@ -54,6 +55,13 @@ class HNSW(Generic[Query, Vector]):
 
     # --- State Operations ---
 
+    def _insert_vector(self, vec: Vector) -> Index:
+        with Lock():
+            q = len(self.vectors)
+            self.vectors.append(vec)
+            self.n_insertions += 1
+        return q
+
     def get_layer(self, lc: int) -> Layer:
         return self.layers[lc] if lc < len(self.layers) else {}
 
@@ -81,23 +89,27 @@ class HNSW(Generic[Query, Vector]):
         self,
         q: Index,
         neighbors: list[tuple[float, Index]],
-        layer: Layer,
+        lc: int,
         max_links: int,
     ):
-        # Connect q -> n.
-        if q in layer:
-            print("Warning: _connect_bidir: q is already in the layer.")
-            return
+        with Lock():
+            layer = self._mut_layer(lc)
 
-        layer[q] = FurthestQueue(neighbors, is_ascending=True)
+            # Connect q -> n.
+            if q in layer:
+                print("Warning: _connect_bidir: q is already in the layer.")
+                return
 
-        for nq, n in neighbors:
-            # Connect n -> q.
-            n_links = HNSW.mut_links(n, layer)
-            self._record_list_comparison(len(n_links))
-            n_links.add(nq, q)
-            if len(n_links) > max_links:
-                n_links.trim_to_k_nearest(max_links)  # or select_neighbors_heuristic
+            layer[q] = FurthestQueue(neighbors, is_ascending=True)
+
+            for nq, n in neighbors:
+                # Connect n -> q.
+                n_links = HNSW.mut_links(n, layer)
+                self._record_list_comparison(len(n_links))
+                n_links.add(nq, q)
+                if len(n_links) > max_links:
+                    n_links.trim_to_k_nearest(max_links)
+                    # or select_neighbors_heuristic.
 
     # --- Stats ---
 
@@ -149,9 +161,7 @@ class HNSW(Generic[Query, Vector]):
 
     def insert(self, q_vec: Query) -> Index:
         q_vec_to_store = self._query_to_vector_func(q_vec)
-        q = len(self.vectors)
-        self.vectors.append(q_vec_to_store)
-        self.n_insertions += 1
+        q = self._insert_vector(q_vec_to_store)
 
         W = self._search_init(q_vec)
         L = len(self.layers) - 1
@@ -167,8 +177,7 @@ class HNSW(Generic[Query, Vector]):
             neighbors = W.get_k_nearest(self.M)  # or select_neighbors_heuristic
 
             max_conn = self.Mmax if lc else self.Mmax0
-            layer = self._mut_layer(lc)
-            self._connect_bidir(q, neighbors, layer, max_conn)
+            self._connect_bidir(q, neighbors, lc, max_conn)
 
         if l > L:
             while l > len(self.layers) - 1:
