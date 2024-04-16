@@ -1,18 +1,30 @@
+from typing import Callable, TypeVar, Generic, TypeAlias
 import numpy as np
 import bisect
 
 
-def int_distance(x, y):
+def int_distance(x: int, y: int) -> int:
     return (x ^ y).bit_count()
 
 
-class HNSW:
+def identity(x):
+    return x
+
+
+Query = TypeVar("Query")
+Vector = TypeVar("Vector")
+Index: TypeAlias = int
+Layer: TypeAlias = dict[Index, "FurthestQueue"]
+
+
+class HNSW(Generic[Query, Vector]):
     def __init__(
         self,
         M: int = 128,
         efConstruction: int = 128,
         m_L: float = 0.3,
-        distance_func=int_distance,
+        distance_func: Callable[[Query, Vector], float] = int_distance,
+        query_to_vector_func: Callable[[Query], Vector] = identity,
     ):
         # Params.
         self.M = int(M)
@@ -23,12 +35,13 @@ class HNSW:
 
         # User Functions.
         self._distance_func = distance_func
+        self._query_to_vector_func = query_to_vector_func
 
         # State.
-        self.vectors = []
-        self.entry_point = []
+        self.vectors: list[Vector] = []
+        self.entry_point: list[Index] = []
         # Layer format: [ { node: [(distance(node, neighbor), neighbor)] } ]
-        self.layers = []
+        self.layers: list[Layer] = []
 
         # Stats.
         self._reset_stats()
@@ -41,32 +54,41 @@ class HNSW:
 
     # --- State Operations ---
 
-    def get_layer(self, lc):
+    def get_layer(self, lc: int) -> Layer:
         return self.layers[lc] if lc < len(self.layers) else {}
 
-    def _mut_layer(self, lc):
+    def _mut_layer(self, lc: int) -> Layer:
         while lc >= len(self.layers):
             self.layers.append({})
         return self.layers[lc]
 
     @staticmethod
-    def get_links(e, layer):
+    def get_links(e: Index, layer) -> "FurthestQueue":
         return layer.get(e) or FurthestQueue()
 
     @staticmethod
-    def mut_links(e, layer):
+    def mut_links(e, layer) -> "FurthestQueue":
         conn = layer.get(e)
         if conn is None:
             conn = FurthestQueue()
             layer[e] = conn
         return conn
 
-    def db_size(self):
+    def db_size(self) -> int:
         return len(self.vectors)
 
-    def _connect_bidir(self, q, neighbors, layer, max_links):
+    def _connect_bidir(
+        self,
+        q: Index,
+        neighbors: list[tuple[float, Index]],
+        layer: Layer,
+        max_links: int,
+    ):
         # Connect q -> n.
-        assert q not in layer, "q is already in the layer."
+        if q in layer:
+            print("Warning: _connect_bidir: q is already in the layer.")
+            return
+
         layer[q] = FurthestQueue(neighbors, is_ascending=True)
 
         for nq, n in neighbors:
@@ -86,7 +108,7 @@ class HNSW:
         self.n_comparisons = 0
         self.n_improve = 0
 
-    def get_params(self):
+    def get_params(self) -> dict[str, int | float]:
         return {
             "M": self.M,
             "efConstruction": self.efConstruction,
@@ -95,7 +117,7 @@ class HNSW:
             # "Mmax0": self.Mmax0,
         }
 
-    def get_stats(self):
+    def get_stats(self) -> dict[str, int]:
         return {
             "db_size": len(self.vectors),
             "n_layers": len(self.layers),
@@ -106,27 +128,29 @@ class HNSW:
             "n_improve": self.n_improve,
         }
 
-    def reset_stats(self):
+    def reset_stats(self) -> dict[str, int]:
         "Return the current stats, then reset them."
         stats = self.get_stats()
         self._reset_stats()
         return stats
 
-    def _record_list_comparison(self, list_length):
+    def _record_list_comparison(self, list_length: int):
         self.n_comparisons += self.n_cmp_per_len[list_length]
 
     # --- HNSW Algorithms ---
 
-    def distance(self, x, y):
+    def _distance(self, x_vec: Query, y_id: Index) -> float:
         self.n_distances += 1
-        return self._distance_func(x, y)
+        y_vec = self.vectors[y_id]
+        return self._distance_func(x_vec, y_vec)
 
-    def _select_layer(self):
+    def _select_layer(self) -> int:
         return int(-np.log(np.random.random()) * self.m_L)
 
-    def insert(self, q_vec) -> int:
+    def insert(self, q_vec: Query) -> Index:
+        q_vec_to_store = self._query_to_vector_func(q_vec)
         q = len(self.vectors)
-        self.vectors.append(q_vec)
+        self.vectors.append(q_vec_to_store)
         self.n_insertions += 1
 
         W = self._search_init(q_vec)
@@ -153,7 +177,9 @@ class HNSW:
 
         return q  # ID of the inserted vector.
 
-    def search(self, q_vec, K, ef=None) -> list[tuple[float, int]]:
+    def search(
+        self, q_vec: Query, K: int, ef: int | None = None
+    ) -> list[tuple[float, int]]:
         "Return the K nearest neighbors of q_vec, as [(distance, vector_id)]."
         self.n_searches += 1
         if not ef:
@@ -173,14 +199,14 @@ class HNSW:
         W.trim_to_k_nearest(K)
         return W
 
-    def _search_init(self, q_vec):
+    def _search_init(self, q_vec: Query) -> "FurthestQueue":
         if self.record_search_log:
             self.search_log.clear()
 
         W = FurthestQueue()
 
         for e in self.entry_point:
-            eq = self.distance(q_vec, self.vectors[e])
+            eq = self._distance(q_vec, e)
 
             self._record_list_comparison(len(W))
             W.add(eq, e)
@@ -190,7 +216,7 @@ class HNSW:
 
         return W
 
-    def _search_layer(self, q_vec, W, ef, lc):
+    def _search_layer(self, q_vec: Query, W: "FurthestQueue", ef: int, lc: int):
         "Mutate W into the ef nearest neighbors of q_vec in the given layer."
 
         layer = self.get_layer(lc)
@@ -215,7 +241,7 @@ class HNSW:
                 if e not in v:
                     v.add(e)
 
-                    eq = self.distance(q_vec, self.vectors[e])
+                    eq = self._distance(q_vec, e)
 
                     if self.record_search_log and e not in self.search_log:
                         self.search_log[e] = (len(self.search_log), depth, eq, fq)
@@ -239,7 +265,7 @@ class HNSW:
 # Sorted list.
 
 
-class FurthestQueue(list):
+class FurthestQueue(list[tuple[float, Index]]):
     "A list sorted in ascending order, for fast pop of the furthest element."
 
     def __init__(self, iterable=None, is_ascending=False):
@@ -250,23 +276,23 @@ class FurthestQueue(list):
                 iterable = sorted(iterable)
             super().__init__(iterable)
 
-    def add(self, dist, to):
+    def add(self, dist: float, to: Index):
         bisect.insort(self, (dist, to))
 
-    def get_furthest(self):
+    def get_furthest(self) -> tuple[float, Index]:
         return self[-1]
 
-    def take_furthest(self):
+    def take_furthest(self) -> tuple[float, Index]:
         return self.pop()
 
-    def get_k_nearest(self, k):
+    def get_k_nearest(self, k) -> list[tuple[float, Index]]:
         return self[:k]
 
     def trim_to_k_nearest(self, k):
         del self[k:]
 
 
-class NearestQueue(list):
+class NearestQueue(list[tuple[float, Index]]):
     "A list sorted in descending order, for fast pop of the nearest element."
 
     def __init__(self, iterable=None, is_descending=False):
@@ -278,14 +304,14 @@ class NearestQueue(list):
             super().__init__(iterable)
 
     @staticmethod
-    def from_furthest_queue(furthest_queue):
+    def from_furthest_queue(furthest_queue: FurthestQueue) -> "NearestQueue":
         return NearestQueue(reversed(furthest_queue), is_descending=True)
 
-    def add(self, dist, to):
+    def add(self, dist: float, to: Index):
         bisect.insort(self, (dist, to), key=lambda x: -x[0])
 
-    def get_nearest(self):
+    def get_nearest(self) -> tuple[float, Index]:
         return self[-1]
 
-    def take_nearest(self):
+    def take_nearest(self) -> tuple[float, Index]:
         return self.pop()

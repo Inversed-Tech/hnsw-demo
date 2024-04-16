@@ -7,7 +7,12 @@ st.set_page_config(layout="wide")
 
 import hnsw
 import iris
-from iris_integration import random_iris, distance_iris
+from iris_integration import (
+    iris_random,
+    iris_distance,
+    iris_with_noise,
+    iris_query_to_vector,
+)
 
 "# HNSW Demo"
 
@@ -42,7 +47,13 @@ with st.sidebar:
 
     @st.cache_resource
     def make_db():
-        return hnsw.HNSW(M=M, efConstruction=efConstruction, m_L=m_L)
+        return hnsw.HNSW(
+            M=M,
+            efConstruction=efConstruction,
+            m_L=m_L,
+            distance_func=iris_distance,
+            query_to_vector_func=iris_query_to_vector,
+        )
 
     @st.cache_resource
     def past_stats():
@@ -64,12 +75,13 @@ sta, stb = st.columns([6, 6], gap="large")
 with sta:
     "## 🧩 Insertion"
 
-    n_insertions = st.number_input("Insert Vectors", 1, value=100, step=100)
+    n_insertions = st.number_input("Insert Vectors", 1, value=10, step=100)
 
     insertions = []
     db.reset_stats()
     for _ in range(int(n_insertions)):
-        vec = random.randint(0, 2**DIM - 1)
+        # vec = random.randint(0, 2**DIM - 1)
+        vec = iris_random()
         _id = db.insert(vec)
         insertions.append((_id, vec))
     df_insertions = pd.DataFrame(insertions, columns=["ID", "Vector"])
@@ -84,18 +96,21 @@ with sta:
 
 with stb:
     "## 🔎 Search"
-    efSearch = st.number_input(
-        "**efSearch:** Breadth of search. Minimum `K` for top-K results. *E.g. 16 - 256.*",
-        1,
-        value=128,
-        step=8,
+    efSearch = int(
+        st.number_input(
+            "**efSearch:** Breadth of search. Minimum `K` for top-K results. *E.g. 16 - 256.*",
+            1,
+            value=128,
+            step=8,
+        )
     )
     K = 5
 
     target = df_insertions.iloc[0]
     noise_level = 0.25
-    noise = random.randint(0, 2 ** int(DIM * noise_level * 2) - 1)
-    query = target.Vector ^ noise
+    # noise = random.randint(0, 2 ** int(DIM * noise_level * 2) - 1)
+    # query = target.Vector ^ noise
+    query = iris_with_noise(target.Vector, level=noise_level)
 
     db.reset_stats()
     res = db.search(query, K, ef=efSearch)
@@ -105,7 +120,7 @@ with stb:
 
     f"Searching for vector `ID {target.ID}`, with `{int(noise_level*100)}%` noise."
     f"Found Top {K} Nearest Neighbors:"
-    df_found
+    st.dataframe(df_found)
     found = target.ID in df_found.ID.values
     st.write("✅ Found!" if found else f"❌ Not Found!")
 
