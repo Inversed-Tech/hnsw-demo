@@ -14,23 +14,24 @@ else:
     MAX_ROT = 15
     DIM = (2, 32, 200)
 
-
+# iris_code_version is added to IrisTemplate
 def iris_random(dim=DIM) -> IrisTemplate:
     return IrisTemplate(
         iris_codes=[
             np.random.randint(0, 2, DIM[1:], dtype=np.bool_) for _ in range(DIM[0])
         ],
-        mask_codes=[np.ones(DIM[1:], dtype=np.bool_) for _ in range(DIM[0])],
+        mask_codes=[np.ones(DIM[1:], dtype=np.bool_) for _ in range(DIM[0])], iris_code_version= "v3.0"
     )
 
-
+# iris_code_version is added to be aligned with 
+# the latest version of open-iris (v1.1.1)
 def iris_with_noise(tpl: IrisTemplate, noise_level=0.25) -> IrisTemplate:
     iris_codes = []
     for iris_code in tpl.iris_codes:
         noise = np.random.uniform(0, 1, iris_code.shape) < noise_level
         noisy = iris_code ^ noise
         iris_codes.append(noisy)
-    return IrisTemplate(iris_codes=iris_codes, mask_codes=tpl.mask_codes)
+    return IrisTemplate(iris_codes=iris_codes, mask_codes=tpl.mask_codes, iris_code_version= "v3.0")
 
 
 # --- Reference variant `iris` using open-iris functions. ---
@@ -80,11 +81,12 @@ def irisnp_query_to_vector(
     code, mask = query[MAX_ROT]
     return (np.packbits(code), np.packbits(mask))
 
-
+# iris_code_version is added to IrisTemplate
 def _rotated(tpl: IrisTemplate, rot: int) -> IrisTemplate:
     return IrisTemplate(
         iris_codes=[np.roll(iris_code, rot, axis=1) for iris_code in tpl.iris_codes],
         mask_codes=[np.roll(mask_code, rot, axis=1) for mask_code in tpl.mask_codes],
+        iris_code_version= "v3.0"
     )
 
 

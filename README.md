@@ -1,5 +1,11 @@
 # HNSW Demo
 
+## installation on MacOS
+You may need the Python 3.11 version to install the (open-iris) package (pip install open-iris) that worked for without any errors. 
+
+Please see a closed issue (https://github.com/worldcoin/open-iris/issues/10) for the Python version problem.
+ 
+ 
 ## Usage
 
 ```bash
