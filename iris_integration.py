@@ -4,7 +4,7 @@ import iris
 from iris.io.dataclasses import IrisTemplate
 from iris.nodes.matcher.utils import hamming_distance
 
-FAST = True
+FAST = False # FAST = True
 if FAST:
     # 1_600 bits.
     MAX_ROT = 4

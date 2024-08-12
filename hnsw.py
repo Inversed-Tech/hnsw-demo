@@ -31,7 +31,7 @@ class HNSW(Generic[Query, Vector]):
         # Params.
         self.M = int(M)
         self.Mmax = self.M
-        self.Mmax0 = self.M
+        self.Mmax0 = self.M * 2 # self.Mmax0 = self.M
         self.efConstruction = int(efConstruction)
         self.m_L = m_L
 
