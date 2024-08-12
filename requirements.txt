@@ -2,6 +2,6 @@ numpy
 pandas
 matplotlib
 
-streamlit
+streamlit===1.32.2
 
-open-iris
+open-iris===1.1.1
