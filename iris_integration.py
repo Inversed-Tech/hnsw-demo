@@ -60,7 +60,7 @@ def iris_query_to_vector(query: IrisTemplate) -> IrisTemplate:
 # Precompute all rotations as a query.
 def irisnp_make_query(tpl: IrisTemplate) -> list[tuple[np.ndarray, np.ndarray]]:
     query_all_rotations = [
-        _tpl_to_numpy(_rotated(tpl, rot)) for rot in range(-MAX_ROT, MAX_ROT + 1)
+        _tpl_to_numpy(rotated_tpl(tpl, rot)) for rot in range(-MAX_ROT, MAX_ROT + 1)
     ]
     return query_all_rotations
 
@@ -82,7 +82,7 @@ def irisnp_query_to_vector(
     return (np.packbits(code), np.packbits(mask))
 
 # iris_code_version is added to IrisTemplate
-def _rotated(tpl: IrisTemplate, rot: int) -> IrisTemplate:
+def rotated_tpl(tpl: IrisTemplate, rot: int) -> IrisTemplate:
     return IrisTemplate(
         iris_codes=[np.roll(iris_code, rot, axis=1) for iris_code in tpl.iris_codes],
         mask_codes=[np.roll(mask_code, rot, axis=1) for mask_code in tpl.mask_codes],
@@ -114,14 +114,14 @@ def _np_distance(
 
 # Precompute all rotations as a query.
 def irisint_make_query(tpl: IrisTemplate) -> list[tuple[int, int]]:
-    all_rotations = [_rotated(tpl, rot) for rot in range(-MAX_ROT, MAX_ROT + 1)]
-    query = [_tpl_to_bigint(x) for x in all_rotations]
+    all_rotations = [rotated_tpl(tpl, rot) for rot in range(-MAX_ROT, MAX_ROT + 1)]
+    query = [convert_to_irisint(x) for x in all_rotations]
     return query
 
 
 # Distance between each precomputed rotation and a vector.
 def irisint_distance(query: list[tuple[int, int]], y: tuple[int, int]) -> float:
-    return min(_int_distance(x, y) for x in query)
+    return min(int_distance(x, y) for x in query)
 
 
 # Store the no-rotation vector.
@@ -129,11 +129,21 @@ def irisint_query_to_vector(query: list[tuple[int, int]]) -> tuple[int, int]:
     return query[MAX_ROT]
 
 
-def _tpl_to_bigint(tpl: IrisTemplate) -> tuple[int, int]:
+def convert_to_irisint(tpl: IrisTemplate) -> tuple[int, int]:
     code = _np_to_bigint(np.concatenate(tpl.iris_codes))
     mask = _np_to_bigint(np.concatenate(tpl.mask_codes))
     return (code, mask)
 
+from math import prod
+def convert_from_irisint(irisint: tuple[int, int], shape: tuple[int, int, int]) -> IrisTemplate:
+    size = prod(shape)
+    iris_codes = list(_bigint_to_np(irisint[0], size).reshape(shape))
+    mask_codes = list(_bigint_to_np(irisint[1], size).reshape(shape))
+    return IrisTemplate(
+        iris_codes=iris_codes,
+        mask_codes=mask_codes,
+        iris_code_version="v3.0"
+    )
 
 def _np_to_bigint(a: np.ndarray) -> int:
     assert a.dtype == np.bool_
@@ -143,8 +153,17 @@ def _np_to_bigint(a: np.ndarray) -> int:
         x = (x << 8) | int(b)
     return x
 
+def _bigint_to_np(a: int, size) -> np.ndarray:
+    a_bytes = list()
+    for _ in range((size+7) >> 3):
+        a_bytes.append(a & 255)
+        a = a >> 8
+    a_bytes.reverse()
+    x_bytes = np.array(a_bytes, dtype=np.uint8)
+    x = np.unpackbits(x_bytes).astype(bool)
+    return x
 
-def _int_distance(x: tuple[int, int], y: tuple[int, int]):
+def int_distance(x: tuple[int, int], y: tuple[int, int]):
     (x_code, x_mask) = x
     (y_code, y_mask) = y
 
