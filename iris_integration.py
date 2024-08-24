@@ -18,9 +18,9 @@ else:
 def iris_random(dim=DIM) -> IrisTemplate:
     return IrisTemplate(
         iris_codes=[
-            np.random.randint(0, 2, DIM[1:], dtype=np.bool_) for _ in range(DIM[0])
+            np.random.randint(0, 2, dim[1:], dtype=np.bool_) for _ in range(dim[0])
         ],
-        mask_codes=[np.ones(DIM[1:], dtype=np.bool_) for _ in range(DIM[0])], iris_code_version= "v3.0"
+        mask_codes=[np.ones(dim[1:], dtype=np.bool_) for _ in range(dim[0])], iris_code_version= "v3.0"
     )
 
 # iris_code_version is added to be aligned with 
