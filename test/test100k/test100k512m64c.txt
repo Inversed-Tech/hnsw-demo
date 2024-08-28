@@ -1,0 +1,1009 @@
+DB construction is done!
+Time             : 65098.66681647301 seconds
+M                : 512
+efConstruction   : 64
+m_L              : 0.3
+K                : 5
+Inital DB size   : 100000
+Searching for vector `ID 100000`, with `30%` noise.
+`Top 5` Nearest Neighbors:
+      Distance     ID
+Rank                 
+0     0.480078   6286
+1     0.480938  80020
+2     0.481563  48667
+3     0.481953  66175
+4     0.482266    174
+Not found
+efSearch         : 8
+Last DB size     : 100010
+Query size       : 10
+Layer size       : 4
+Search number    : 1
+Distance number  : 2990
+Comparison number: 3322
+Time             : 0.21012187004089355 seconds
+
+
+
+
+
+Searching for vector `ID 100010`, with `30%` noise.
+`Top 5` Nearest Neighbors:
+      Distance     ID
+Rank                 
+0     0.479844    547
+1     0.481563  11531
+2     0.482344  42613
+3     0.482656    426
+4     0.482734  62521
+Not found
+efSearch         : 8
+Last DB size     : 100110
+Query size       : 100
+Layer size       : 4
+Search number    : 1
+Distance number  : 4196
+Comparison number: 4631
+Time             : 0.27781105041503906 seconds
+
+
+
+
+
+Searching for vector `ID 100110`, with `30%` noise.
+`Top 5` Nearest Neighbors:
+      Distance     ID
+Rank                 
+0     0.481875  67643
+1     0.482500  36673
+2     0.483047  66107
+3     0.483438  17519
+4     0.483438  74574
+Not found
+efSearch         : 8
+Last DB size     : 100610
+Query size       : 500
+Layer size       : 4
+Search number    : 1
+Distance number  : 1421
+Comparison number: 1651
+Time             : 0.12314820289611816 seconds
+
+
+
+
+
+Searching for vector `ID 100610`, with `30%` noise.
+`Top 5` Nearest Neighbors:
+      Distance     ID
+Rank                 
+0     0.479375  55031
+1     0.482187  50321
+2     0.483047  86940
+3     0.483516  71629
+4     0.483750  23664
+Not found
+efSearch         : 8
+Last DB size     : 101610
+Query size       : 1000
+Layer size       : 4
+Search number    : 1
+Distance number  : 1711
+Comparison number: 2097
+Time             : 0.12992000579833984 seconds
+
+
+
+
+
+Searching for vector `ID 101610`, with `30%` noise.
+`Top 5` Nearest Neighbors:
+      Distance      ID
+Rank                  
+0     0.480938    3699
+1     0.482734   62629
+2     0.482812  105820
+3     0.483203     167
+4     0.483281   41937
+Not found
+efSearch         : 8
+Last DB size     : 106610
+Query size       : 5000
+Layer size       : 4
+Search number    : 1
+Distance number  : 2303
+Comparison number: 2672
+Time             : 0.16637873649597168 seconds
+
+
+
+
+
+Searching for vector `ID 106610`, with `30%` noise.
+`Top 5` Nearest Neighbors:
+      Distance      ID
+Rank                  
+0     0.481563    7122
+1     0.483047   69241
+2     0.483047   71359
+3     0.483203   35851
+4     0.483281  107866
+Not found
+efSearch         : 8
+Last DB size     : 116610
+Query size       : 10000
+Layer size       : 4
+Search number    : 1
+Distance number  : 2651
+Comparison number: 3010
+Time             : 0.19478225708007812 seconds
+
+
+
+
+
+
+
+
+
+
+Searching for vector `ID 116610`, with `30%` noise.
+`Top 5` Nearest Neighbors:
+      Distance     ID
+Rank                 
+0     0.480781  76291
+1     0.481797  71328
+2     0.482187  12959
+3     0.482266   7911
+4     0.482578   1663
+Not found
+efSearch         : 16
+Last DB size     : 116620
+Query size       : 10
+Layer size       : 4
+Search number    : 1
+Distance number  : 3597
+Comparison number: 4558
+Time             : 0.2447962760925293 seconds
+
+
+
+
+
+Searching for vector `ID 116620`, with `30%` noise.
+`Top 5` Nearest Neighbors:
+      Distance     ID
+Rank                 
+0     0.478906   6505
+1     0.481797  47399
+2     0.481875  59804
+3     0.482422   6293
+4     0.482422  77003
+Not found
+efSearch         : 16
+Last DB size     : 116720
+Query size       : 100
+Layer size       : 4
+Search number    : 1
+Distance number  : 4957
+Comparison number: 5870
+Time             : 0.33537912368774414 seconds
+
+
+
+
+
+Searching for vector `ID 116720`, with `30%` noise.
+`Top 5` Nearest Neighbors:
+      Distance      ID
+Rank                  
+0     0.481719  110830
+1     0.481953   22090
+2     0.482109   93451
+3     0.482344   10751
+4     0.482578   32181
+Not found
+efSearch         : 16
+Last DB size     : 117220
+Query size       : 500
+Layer size       : 4
+Search number    : 1
+Distance number  : 3662
+Comparison number: 4382
+Time             : 0.24713754653930664 seconds
+
+
+
+
+
+Searching for vector `ID 117220`, with `30%` noise.
+`Top 5` Nearest Neighbors:
+      Distance     ID
+Rank                 
+0     0.479531   1199
+1     0.482109  99794
+2     0.482187     81
+3     0.482187  10767
+4     0.482500   3163
+Not found
+efSearch         : 16
+Last DB size     : 118220
+Query size       : 1000
+Layer size       : 4
+Search number    : 1
+Distance number  : 6797
+Comparison number: 7931
+Time             : 0.4505908489227295 seconds
+
+
+
+
+
+Searching for vector `ID 118220`, with `30%` noise.
+`Top 5` Nearest Neighbors:
+      Distance     ID
+Rank                 
+0     0.480234  33005
+1     0.480547   1224
+2     0.481406  31411
+3     0.482734  38774
+4     0.482812     58
+Not found
+efSearch         : 16
+Last DB size     : 123220
+Query size       : 5000
+Layer size       : 4
+Search number    : 1
+Distance number  : 5864
+Comparison number: 6644
+Time             : 0.38788628578186035 seconds
+
+
+
+
+
+Searching for vector `ID 123220`, with `30%` noise.
+`Top 5` Nearest Neighbors:
+      Distance      ID
+Rank                  
+0     0.479766   49654
+1     0.483047   17577
+2     0.483516  104249
+3     0.483594  100587
+4     0.483672   25611
+Not found
+efSearch         : 16
+Last DB size     : 133220
+Query size       : 10000
+Layer size       : 4
+Search number    : 1
+Distance number  : 3321
+Comparison number: 4152
+Time             : 0.2264561653137207 seconds
+
+
+
+
+
+
+
+
+
+
+Searching for vector `ID 133220`, with `30%` noise.
+`Top 5` Nearest Neighbors:
+      Distance      ID
+Rank                  
+0     0.476484  106071
+1     0.481406   90247
+2     0.481563   17595
+3     0.481719   40684
+4     0.481719   59340
+Not found
+efSearch         : 32
+Last DB size     : 133230
+Query size       : 10
+Layer size       : 4
+Search number    : 1
+Distance number  : 10371
+Comparison number: 12759
+Time             : 0.6481797695159912 seconds
+
+
+
+
+
+Searching for vector `ID 133230`, with `30%` noise.
+`Top 5` Nearest Neighbors:
+      Distance     ID
+Rank                 
+0     0.480547  24061
+1     0.480859  73259
+2     0.481250  36018
+3     0.481406  12580
+4     0.481953  13223
+Not found
+efSearch         : 32
+Last DB size     : 133330
+Query size       : 100
+Layer size       : 4
+Search number    : 1
+Distance number  : 10562
+Comparison number: 13049
+Time             : 0.6647171974182129 seconds
+
+
+
+
+
+Searching for vector `ID 133330`, with `30%` noise.
+`Top 5` Nearest Neighbors:
+      Distance      ID
+Rank                  
+0     0.480234   23634
+1     0.481641   51375
+2     0.481719    6593
+3     0.481719  114737
+4     0.481797   26585
+Not found
+efSearch         : 32
+Last DB size     : 133830
+Query size       : 500
+Layer size       : 4
+Search number    : 1
+Distance number  : 6974
+Comparison number: 9144
+Time             : 0.44500112533569336 seconds
+
+
+
+
+
+Searching for vector `ID 133830`, with `30%` noise.
+`Top 5` Nearest Neighbors:
+      Distance      ID
+Rank                  
+0     0.478594    4977
+1     0.479219    2154
+2     0.480391   28162
+3     0.480391   37822
+4     0.480391  107519
+Not found
+efSearch         : 32
+Last DB size     : 134830
+Query size       : 1000
+Layer size       : 4
+Search number    : 1
+Distance number  : 7712
+Comparison number: 10001
+Time             : 0.4886488914489746 seconds
+
+
+
+
+
+Searching for vector `ID 134830`, with `30%` noise.
+`Top 5` Nearest Neighbors:
+      Distance      ID
+Rank                  
+0     0.479687    2218
+1     0.480547  126189
+2     0.481250   84468
+3     0.481406   25522
+4     0.481953   41122
+Not found
+efSearch         : 32
+Last DB size     : 139830
+Query size       : 5000
+Layer size       : 4
+Search number    : 1
+Distance number  : 8724
+Comparison number: 10887
+Time             : 0.5480430126190186 seconds
+
+
+
+
+
+Searching for vector `ID 139830`, with `30%` noise.
+`Top 5` Nearest Neighbors:
+      Distance      ID
+Rank                  
+0     0.479297   38204
+1     0.479922  119566
+2     0.480547   35339
+3     0.480703    1791
+4     0.481328   67341
+Not found
+efSearch         : 32
+Last DB size     : 149830
+Query size       : 10000
+Layer size       : 4
+Search number    : 1
+Distance number  : 7749
+Comparison number: 9970
+Time             : 0.4940307140350342 seconds
+
+
+
+
+
+
+
+
+
+
+Searching for vector `ID 149830`, with `30%` noise.
+`Top 5` Nearest Neighbors:
+      Distance      ID
+Rank                  
+0     0.480156   88398
+1     0.480938  138883
+2     0.481016     515
+3     0.481016   12562
+4     0.481250    1702
+Not found
+efSearch         : 64
+Last DB size     : 149840
+Query size       : 10
+Layer size       : 4
+Search number    : 1
+Distance number  : 18025
+Comparison number: 23753
+Time             : 1.1152913570404053 seconds
+
+
+
+
+
+Searching for vector `ID 149840`, with `30%` noise.
+`Top 5` Nearest Neighbors:
+      Distance      ID
+Rank                  
+0     0.479531   57899
+1     0.480156    5884
+2     0.480625    3624
+3     0.481484   65250
+4     0.481797  138495
+Not found
+efSearch         : 64
+Last DB size     : 149940
+Query size       : 100
+Layer size       : 4
+Search number    : 1
+Distance number  : 15368
+Comparison number: 20879
+Time             : 0.9479806423187256 seconds
+
+
+
+
+
+Searching for vector `ID 149940`, with `30%` noise.
+`Top 5` Nearest Neighbors:
+      Distance      ID
+Rank                  
+0     0.478906   16727
+1     0.480078    9965
+2     0.480859   68924
+3     0.480938   70700
+4     0.480938  126332
+Not found
+efSearch         : 64
+Last DB size     : 150440
+Query size       : 500
+Layer size       : 4
+Search number    : 1
+Distance number  : 13615
+Comparison number: 18950
+Time             : 0.8432896137237549 seconds
+
+
+
+
+
+Searching for vector `ID 150440`, with `30%` noise.
+`Top 5` Nearest Neighbors:
+      Distance      ID
+Rank                  
+0     0.297969  150440
+1     0.479922   97372
+2     0.480938   26398
+3     0.481250   11520
+4     0.481719   51724
+Found
+efSearch         : 64
+Last DB size     : 151440
+Query size       : 1000
+Layer size       : 4
+Search number    : 1
+Distance number  : 16250
+Comparison number: 21988
+Time             : 0.9986729621887207 seconds
+
+
+
+
+
+Searching for vector `ID 151440`, with `30%` noise.
+`Top 5` Nearest Neighbors:
+      Distance      ID
+Rank                  
+0     0.478828   76202
+1     0.479063   24939
+2     0.480703   35782
+3     0.480938  130284
+4     0.481016   81701
+Not found
+efSearch         : 64
+Last DB size     : 156440
+Query size       : 5000
+Layer size       : 4
+Search number    : 1
+Distance number  : 15999
+Comparison number: 21914
+Time             : 0.9889793395996094 seconds
+
+
+
+
+
+Searching for vector `ID 156440`, with `30%` noise.
+`Top 5` Nearest Neighbors:
+      Distance      ID
+Rank                  
+0     0.478828   44487
+1     0.479531  148359
+2     0.480625    8714
+3     0.480781  101906
+4     0.481016   60050
+Not found
+efSearch         : 64
+Last DB size     : 166440
+Query size       : 10000
+Layer size       : 4
+Search number    : 1
+Distance number  : 13293
+Comparison number: 18195
+Time             : 0.8288993835449219 seconds
+
+
+
+
+
+
+
+
+
+
+Searching for vector `ID 166440`, with `30%` noise.
+`Top 5` Nearest Neighbors:
+      Distance      ID
+Rank                  
+0     0.477109   57862
+1     0.479922   19111
+2     0.480156   10730
+3     0.480234  125100
+4     0.480469  142538
+Not found
+efSearch         : 128
+Last DB size     : 166450
+Query size       : 10
+Layer size       : 4
+Search number    : 1
+Distance number  : 23575
+Comparison number: 34659
+Time             : 1.4413957595825195 seconds
+
+
+
+
+
+Searching for vector `ID 166450`, with `30%` noise.
+`Top 5` Nearest Neighbors:
+      Distance     ID
+Rank                 
+0     0.476484  42647
+1     0.478906  11816
+2     0.479375   5961
+3     0.479609  16448
+4     0.480234    651
+Not found
+efSearch         : 128
+Last DB size     : 166550
+Query size       : 100
+Layer size       : 4
+Search number    : 1
+Distance number  : 22414
+Comparison number: 34014
+Time             : 1.3952305316925049 seconds
+
+
+
+
+
+Searching for vector `ID 166550`, with `30%` noise.
+`Top 5` Nearest Neighbors:
+      Distance     ID
+Rank                 
+0     0.479141  82878
+1     0.479922  14912
+2     0.480234  17597
+3     0.480391   4392
+4     0.480625  32469
+Not found
+efSearch         : 128
+Last DB size     : 167050
+Query size       : 500
+Layer size       : 4
+Search number    : 1
+Distance number  : 25097
+Comparison number: 36970
+Time             : 1.5286304950714111 seconds
+
+
+
+
+
+Searching for vector `ID 167050`, with `30%` noise.
+`Top 5` Nearest Neighbors:
+      Distance      ID
+Rank                  
+0     0.297344  167050
+1     0.479609  153045
+2     0.479687   61330
+3     0.480547  137309
+4     0.480703    9048
+Found
+efSearch         : 128
+Last DB size     : 168050
+Query size       : 1000
+Layer size       : 4
+Search number    : 1
+Distance number  : 25841
+Comparison number: 37568
+Time             : 1.6125481128692627 seconds
+
+
+
+
+
+Searching for vector `ID 168050`, with `30%` noise.
+`Top 5` Nearest Neighbors:
+      Distance      ID
+Rank                  
+0     0.480234  129690
+1     0.480781   39916
+2     0.480781   79787
+3     0.481094  167293
+4     0.481328   33049
+Not found
+efSearch         : 128
+Last DB size     : 173050
+Query size       : 5000
+Layer size       : 4
+Search number    : 1
+Distance number  : 22109
+Comparison number: 33764
+Time             : 1.3737990856170654 seconds
+
+
+
+
+
+Searching for vector `ID 173050`, with `30%` noise.
+`Top 5` Nearest Neighbors:
+      Distance      ID
+Rank                  
+0     0.476641  150294
+1     0.478906  159347
+2     0.479609  150567
+3     0.480312   93858
+4     0.480547   16322
+Not found
+efSearch         : 128
+Last DB size     : 183050
+Query size       : 10000
+Layer size       : 4
+Search number    : 1
+Distance number  : 27888
+Comparison number: 39863
+Time             : 1.6931133270263672 seconds
+
+
+
+
+
+
+
+
+
+
+Searching for vector `ID 183050`, with `30%` noise.
+`Top 5` Nearest Neighbors:
+      Distance      ID
+Rank                  
+0     0.302891  183050
+1     0.478203   11553
+2     0.479375  130445
+3     0.479922   48162
+4     0.480000   21812
+Found
+efSearch         : 256
+Last DB size     : 183060
+Query size       : 10
+Layer size       : 4
+Search number    : 1
+Distance number  : 41067
+Comparison number: 67216
+Time             : 2.4800424575805664 seconds
+
+
+
+
+
+Searching for vector `ID 183060`, with `30%` noise.
+`Top 5` Nearest Neighbors:
+      Distance      ID
+Rank                  
+0     0.478750   51911
+1     0.479297   44764
+2     0.479844  142433
+3     0.480625   84559
+4     0.480781    5579
+Not found
+efSearch         : 256
+Last DB size     : 183160
+Query size       : 100
+Layer size       : 4
+Search number    : 1
+Distance number  : 38827
+Comparison number: 64224
+Time             : 2.3638176918029785 seconds
+
+
+
+
+
+Searching for vector `ID 183160`, with `30%` noise.
+`Top 5` Nearest Neighbors:
+      Distance     ID
+Rank                 
+0     0.477031  52681
+1     0.480000  44263
+2     0.480234   1584
+3     0.480391  29645
+4     0.480469  35991
+Not found
+efSearch         : 256
+Last DB size     : 183660
+Query size       : 500
+Layer size       : 4
+Search number    : 1
+Distance number  : 38624
+Comparison number: 65060
+Time             : 2.3401377201080322 seconds
+
+
+
+
+
+Searching for vector `ID 183660`, with `30%` noise.
+`Top 5` Nearest Neighbors:
+      Distance      ID
+Rank                  
+0     0.295234  183660
+1     0.478828   11666
+2     0.479687  183214
+3     0.479844   74670
+4     0.480156      98
+Found
+efSearch         : 256
+Last DB size     : 184660
+Query size       : 1000
+Layer size       : 4
+Search number    : 1
+Distance number  : 38722
+Comparison number: 64158
+Time             : 2.344933271408081 seconds
+
+
+
+
+
+Searching for vector `ID 184660`, with `30%` noise.
+`Top 5` Nearest Neighbors:
+      Distance      ID
+Rank                  
+0     0.305547  184660
+1     0.477891  168194
+2     0.478594   86663
+3     0.479453  135869
+4     0.479531    7237
+Found
+efSearch         : 256
+Last DB size     : 189660
+Query size       : 5000
+Layer size       : 4
+Search number    : 1
+Distance number  : 42209
+Comparison number: 68362
+Time             : 2.561295509338379 seconds
+
+
+
+
+
+Searching for vector `ID 189660`, with `30%` noise.
+`Top 5` Nearest Neighbors:
+      Distance      ID
+Rank                  
+0     0.304766  189660
+1     0.476094   30739
+2     0.478828    1618
+3     0.479375    5495
+4     0.480312  199417
+Found
+efSearch         : 256
+Last DB size     : 199660
+Query size       : 10000
+Layer size       : 4
+Search number    : 1
+Distance number  : 43961
+Comparison number: 68958
+Time             : 2.6800537109375 seconds
+
+
+
+
+
+
+
+
+
+
+Searching for vector `ID 199660`, with `30%` noise.
+`Top 5` Nearest Neighbors:
+      Distance      ID
+Rank                  
+0     0.476875  197077
+1     0.478438   33842
+2     0.478828   84366
+3     0.479687   41163
+4     0.479844   84543
+Not found
+efSearch         : 512
+Last DB size     : 199670
+Query size       : 10
+Layer size       : 4
+Search number    : 1
+Distance number  : 65800
+Comparison number: 121954
+Time             : 3.977247476577759 seconds
+
+
+
+
+
+Searching for vector `ID 199670`, with `30%` noise.
+`Top 5` Nearest Neighbors:
+      Distance      ID
+Rank                  
+0     0.479453   84458
+1     0.479766   81885
+2     0.479922   42649
+3     0.480000  118890
+4     0.480078   38686
+Not found
+efSearch         : 512
+Last DB size     : 199770
+Query size       : 100
+Layer size       : 4
+Search number    : 1
+Distance number  : 68366
+Comparison number: 125686
+Time             : 4.149219274520874 seconds
+
+
+
+
+
+Searching for vector `ID 199770`, with `30%` noise.
+`Top 5` Nearest Neighbors:
+      Distance      ID
+Rank                  
+0     0.291172  199770
+1     0.478438    7409
+2     0.478828   59346
+3     0.479141  182586
+4     0.479844   24239
+Found
+efSearch         : 512
+Last DB size     : 200270
+Query size       : 500
+Layer size       : 4
+Search number    : 1
+Distance number  : 66491
+Comparison number: 122161
+Time             : 4.014194965362549 seconds
+
+
+
+
+
+Searching for vector `ID 200270`, with `30%` noise.
+`Top 5` Nearest Neighbors:
+      Distance      ID
+Rank                  
+0     0.298984  200270
+1     0.477734   21813
+2     0.478594    4075
+3     0.478672   69416
+4     0.478828  113493
+Found
+efSearch         : 512
+Last DB size     : 201270
+Query size       : 1000
+Layer size       : 4
+Search number    : 1
+Distance number  : 69504
+Comparison number: 126904
+Time             : 4.196664333343506 seconds
+
+
+
+
+
+Searching for vector `ID 201270`, with `30%` noise.
+`Top 5` Nearest Neighbors:
+      Distance      ID
+Rank                  
+0     0.477500   40094
+1     0.477969  124584
+2     0.478516  158282
+3     0.478672    6362
+4     0.479219  183961
+Not found
+efSearch         : 512
+Last DB size     : 206270
+Query size       : 5000
+Layer size       : 4
+Search number    : 1
+Distance number  : 64178
+Comparison number: 120167
+Time             : 3.8665218353271484 seconds
+
+
+
+
+
+Searching for vector `ID 206270`, with `30%` noise.
+`Top 5` Nearest Neighbors:
+      Distance      ID
+Rank                  
+0     0.477266  108043
+1     0.479297    4445
+2     0.480469   14911
+3     0.480703  191861
+4     0.480781   42031
+Not found
+efSearch         : 512
+Last DB size     : 216270
+Query size       : 10000
+Layer size       : 4
+Search number    : 1
+Distance number  : 70477
+Comparison number: 125980
+Time             : 4.255373477935791 seconds
+
+
+
+
+
+
+
+
+
+
+All experiments are done!
