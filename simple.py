@@ -129,7 +129,6 @@ for number in range(100):
     # print("Time             : " + str(search_stats['duration_sec']) + " seconds")
     # print("\n\n\n\n")
 print("Last DB size     : " + str(db.get_stats()["db_size"]))  
-print("Time             : " + str(search_stats['duration_sec']) + " seconds")  
 print("match: " + str(count))
 print("nonmatch: " + str(noncount))
          
