@@ -1,14 +1,8 @@
-import numpy as np
-from numpy import log as ln
-import math
 import pandas as pd
 
 import hnsw
 
 from iris_integration import (
-    # Generate test templates.
-    DIM,
-    MAX_ROT,
     iris_random,
     iris_with_noise,
     irisint_make_query as make_query,
@@ -17,13 +11,17 @@ from iris_integration import (
 )
 
 ## HNSW Demo
-
-n_elements = 100
 K = 5
 m_L = 0.30
-M = 128
-efConstruction = 128
 
+n_elements = 100      # the number of elts for constructing DB
+M = 128               # M value
+efConstruction = 128  # efConstruction
+
+
+n_insertions = 10     # the number of elts to insert
+efSearch = 128        # efSearch value
+noise_level = 0.30    # iris codes can be noisy
 
 def past_stats():
     return []
@@ -64,21 +62,18 @@ pd.DataFrame(past_stats())
 # print(df_construction)
 print("DB construction is done!")
 
-print("DB construction  : " + str(_construct_stats['duration_sec']) + " seconds")
-# print("Inital DB size   : " + str(_construct_stats["db_size"]))
+print("Inital DB size   : " + str(_construct_stats["db_size"]))
 # print("M                : " + str(M))
 # print("efConstruction   : " + str(efConstruction))
 # print("m_L              : " + str(m_L))
 # print("K                : " + str(K))
+print("DB construction  : " + str(_construct_stats['duration_sec']) + " seconds\n")
 
 ## Expriments are starting... 
-n_insertions = 100
-efSearch =32
-
 count = 0
 noncount = 0
 
-for number in range(100):
+if n_insertions > 0:
     ## Insertion
     _insertions = []
     db.reset_stats()
@@ -93,43 +88,43 @@ for number in range(100):
     df_insertions = pd.DataFrame(_insertions, columns=["ID", "Template"])
     pd.DataFrame(past_stats())
 
+print("Insertion is done!")
+print(f"DB size after insertions    : {insert_stats['db_size']}") 
+print(f"Insertion time              : {insert_stats['duration_sec']} seconds\n")
 
-    ## Search
-    noise_level = 0.2
 
-    target = df_insertions.iloc[0]
-    noisy_tpl = iris_with_noise(target.Template, noise_level=noise_level)
 
-    db.reset_stats()
-    query = make_query(noisy_tpl)
-    res = db.search(query, K, ef=efSearch)
-    search_stats = db.get_stats()
-    df_found = pd.DataFrame(res, columns=["Distance", "ID"]) 
-    df_found.index.name = "Rank"
-    ## print("result: " + str(res))
+ ## Search for one elt in DB
+target = df_insertions.iloc[0] # change "0" of the target elt in DB to search
+noisy_tpl = iris_with_noise(target.Template, noise_level=noise_level)
 
-    # print(f"Searching for vector `ID {target.ID}`, with `{int(noise_level*100)}%` noise.")
-    # print(f"`Top {K}` Nearest Neighbors:")
-    # print(df_found)
-    found = target.ID in df_found.ID.values
-    if found == True:
-        count += 1
-        # print("Found")
-    else:
-        noncount += 1
-        # print("Not found")
-        
-    # print("efSearch         : " + str(efSearch))
-    # print("Last DB size     : " + str(db.get_stats()["db_size"]))
-    # print("Query size       : " + str(n_insertions))
-    # print("Layer size       : " + str(search_stats['n_layers']))
-    # print("Search number    : " + str(search_stats['n_searches']))
-    # print("Distance number  : " + str(search_stats['n_distances']))
-    # print("Comparison number: " + str(search_stats['n_comparisons']))
-    # print("Time             : " + str(search_stats['duration_sec']) + " seconds")
-    # print("\n\n\n\n")
-print("Last DB size     : " + str(db.get_stats()["db_size"]))  
-print("match: " + str(count))
+db.reset_stats()
+query = make_query(noisy_tpl)
+res = db.search(query, K, ef=efSearch)
+search_stats = db.get_stats()
+df_found = pd.DataFrame(res, columns=["Distance", "ID"]) 
+## print("result: " + str(res))
+
+# print(f"Searching for vector `ID {target.ID}`, with `{int(noise_level*100)}%` noise.")
+# print(f"`Top {K}` Nearest Neighbors:")
+# print(df_found)
+found = target.ID in df_found.ID.values
+if found == True:
+    count += 1
+    # print("Found")
+else:
+    noncount += 1
+    # print("Not found")
+
+print("Search is done!")
+# print("Last DB size     : " + str(db.get_stats()["db_size"]))
+print("Search time      : " + str(search_stats['duration_sec']) + " seconds")      
+# print("efSearch         : " + str(efSearch))
+# print("Query size       : " + str(n_insertions))
+# print("Layer size       : " + str(search_stats['n_layers']))
+# print("Search number    : " + str(search_stats['n_searches']))
+# print("Distance number  : " + str(search_stats['n_distances']))
+# print("Comparison number: " + str(search_stats['n_comparisons']))
+print(f"\nMatch result for iris code {target.ID}")
+print("match   : " + str(count))
 print("nonmatch: " + str(noncount))
-         
-# print("All experiments are done!")

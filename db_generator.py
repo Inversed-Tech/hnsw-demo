@@ -11,12 +11,13 @@ from iris_integration import (
 )
 
 ## DataBase construction for HNSW Demo
-
-##################### a name for csv file "test.csv" in line 72
+## In order to generate the same DB 
+## use np.random.seed(0) in the line 18 of iris_integration.py
 ##################### Decide DB construction via hnsw
-n_elements = 1000       # the number of elements (n_elements) loaded to DB
-M = 64                  # M value
-efConstruction = 64     # efConstruction
+n_elements = 1000         # the number of elts for constructing the DB
+M = 64                    # M value
+efConstruction = 64       # efConstruction
+file = 'db1k64m64c.txt'   # file name
 m_L = 0.30
 
 def past_stats():
@@ -54,7 +55,7 @@ pd.DataFrame(past_stats())
 # print(df_construction)
 print("DB construction is done!")
 
-file = 'db1k64m64c.txt'
+## writing the DB to the file
 with open(file, 'wb') as f:
     dill.dump(db, f)
 
