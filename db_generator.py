@@ -61,7 +61,7 @@ with open(file, 'wb') as f:
 
 print("DB construction is written to a txt file!")
 
-print("Last DB size   : " + str(db.get_stats()["db_size"]))
+print("Last DB size     : " + str(db.get_stats()["db_size"]))
 print("M                : " + str(M))
 print("efConstruction   : " + str(efConstruction))
 print("m_L              : " + str(m_L))

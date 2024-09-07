@@ -17,9 +17,9 @@ from iris_integration import (
 ## In order to generate the same insertion 
 ## use np.random.seed(1) in the line 18 of iris_integration.py
 ##################### Decide DB loading via hnsw
-file = 'db1k64m64c.txt' # 'db10k64m64c.txt', 'db1k64m64c.txt'
-M = 64                  # M value
-efConstruction = 64     # efConstruction value
+file = 'db10k32m128c.txt'  #'db1k32m128c.txt'   #'db10k128m128c.txt' # 'db10k64m64c.txt', 'db1k64m64c.txt'
+M = 32                     # M value
+efConstruction = 128       # efConstruction value
 
 m_L = 0.30
 K = 5
@@ -27,8 +27,8 @@ K = 5
 noise_level = 0.30      # iris codes can be noisy
 threshold = 0.36        # when noise_level=0.30, threshold could be ~0.48 
 
-n_insertions = 100      # the number of elts to insert
-efSearch = 256          # efSearch value
+n_insertions = 0        # the number of elts to insert
+efSearch = 64           # efSearch value
     
 def past_stats():
     return []
@@ -73,8 +73,11 @@ if n_insertions > 0:
     
     # print(f"DB construction  : {insert_stats['duration_sec']} seconds")
     # print(f"Last DB size     : {db.get_stats()['db_size']}") 
-
     print("\nInsertion is done...\n")
+else:
+    print(f"\nThere is {n_insertions} insertions...\n")
+
+
 
 
 ## search each item in DB
@@ -117,11 +120,6 @@ for number in range(10):
         # else:
         #     print(f"{res[0][0]}") 
 
-        ## nearest_dist, nearest_id = db.search(query, K=5, ef=efSearch)[0]  
-        ## if res[0][0] == nearest_dist: #0.0 < res[0] < threshold
-        ##     print(f"{res[0][0]} and {nearest_dist}")  
-        ## # else:
-        ## #     print(f"{res[0][0]}") 
     
     print(f"Found    : {n_found} out of {db.get_stats()['db_size']} elements")
 
