@@ -1,5 +1,5 @@
-__pycache__
-
+__pycache__/
 .config/pip/
-
 .DS_Store
+analysis_notebooks/.ipynb_checkpoints/
+
