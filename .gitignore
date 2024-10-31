@@ -4,3 +4,4 @@ __pycache__/
 analysis_notebooks/.ipynb_checkpoints/
 
 .ipynb_checkpoints/
+analysis_notebooks/synthetic_data/
