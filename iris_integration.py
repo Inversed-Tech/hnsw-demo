@@ -14,6 +14,8 @@ else:
     MAX_ROT = 15
     DIM = (2, 32, 200)
 
+# np.random.seed(0)  is for generating the same iris codes.
+np.random.seed(0) 
 # iris_code_version is added to IrisTemplate
 def iris_random(dim=DIM) -> IrisTemplate:
     return IrisTemplate(
