@@ -121,7 +121,8 @@ def irisint_make_query(tpl: IrisTemplate) -> list[tuple[int, int]]:
 
 # Distance between each precomputed rotation and a vector.
 def irisint_distance(query: list[tuple[int, int]], y: tuple[int, int]) -> float:
-    return min(int_distance(x, y) for x in query)
+    # return min(int_distance(x, y) for x in query)
+    return int_distance(query[MAX_ROT], y)
 
 
 # Store the no-rotation vector.

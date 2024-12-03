@@ -172,17 +172,17 @@ class HNSW(Generic[Query, Vector]):
     def _select_layer(self) -> int:
         return int(-np.log(np.random.random()) * self.m_L)
 
-    def insert(self, q_vec: Query) -> Index:
+    def insert(self, q_vec: Query, insert_layer = None) -> Index:
         q_vec_to_store = self._query_to_vector_func(q_vec)
         q = self._mut_insert_vector(q_vec_to_store)
 
         W = self._search_init(q_vec)
         L = len(self.layers) - 1
-        l = self._select_layer()
+        l = insert_layer if insert_layer is not None else self._select_layer()
 
         # From the top layer down to the new node layer, non-inclusive.
         for lc in range(L, l, -1):
-            self._search_layer(q_vec, W, 1, lc)
+            self._search_layer(q_vec, W, self.efConstruction, lc)
             W.trim_to_k_nearest(1)
 
         for lc in range(min(L, l), -1, -1):
@@ -211,7 +211,7 @@ class HNSW(Generic[Query, Vector]):
         L = len(self.layers) - 1
 
         for lc in range(L, 0, -1):
-            self._search_layer(q_vec, W, 1, lc)
+            self._search_layer(q_vec, W, ef, lc)
             W.trim_to_k_nearest(1)
 
         self._search_layer(q_vec, W, ef, 0)
@@ -231,7 +231,7 @@ class HNSW(Generic[Query, Vector]):
             W.add(eq, e)
 
             if self.record_search_log:
-                self.search_log[e] = (len(self.search_log), 0, eq, eq)
+                self.search_log[e] = (len(self.search_log), 0, eq, eq, len(self.layers)-1)
 
         return W
 
@@ -263,7 +263,7 @@ class HNSW(Generic[Query, Vector]):
                     eq = self._distance(q_vec, e)
 
                     if self.record_search_log and e not in self.search_log:
-                        self.search_log[e] = (len(self.search_log), depth, eq, fq)
+                        self.search_log[e] = (len(self.search_log), depth, eq, fq, lc)
 
                     if len(W) == ef:  # W is full
                         self.n_comparisons += 1  # record_list_comparison(1)
